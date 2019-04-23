@@ -4,7 +4,7 @@ declare module 'automerge' {
   function canUndo<T>(doc: T): boolean
   function change<T>(doc: T, message: string, callback: ChangeFn<T>): T
   function change<T>(doc: T, callback: ChangeFn<T>): T
-  function diff<T>(oldDoc: T, newDoc: T): Diff
+  function diff<T>(oldDoc: T, newDoc: T): Diff[]
   function emptyChange<T>(doc: T, message?: string): T
   function equals<T>(val1: T, val2: T): boolean
   function getActorId<T>(doc: T): UUID
