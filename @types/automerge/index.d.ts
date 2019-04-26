@@ -1,3 +1,5 @@
+import { UUID } from "automerge"
+
 declare module 'automerge' {
   function applyChanges<T>(doc: T, changes: Change<T>[]): T
   function canRedo<T>(doc: T): boolean
@@ -72,8 +74,8 @@ declare module 'automerge' {
     applyChanges(docId: UUID, changes: Change<T>[]): T
     getDoc(docId: UUID): T
     setDoc(docId: UUID, doc: T): void
-    registerHandler(handler: Handler<T>): void
-    unregisterHandler(handler: Handler<T>): void
+    registerHandler(handler: DocSetHandler<T>): void
+    unregisterHandler(handler: DocSetHandler<T>): void
   }
 
   class WatchableDoc<T> {
@@ -81,8 +83,8 @@ declare module 'automerge' {
     applyChanges(changes: Change<T>[]): T
     get(): T
     set(doc: T): void
-    registerHandler(handler: Handler<T>): void
-    unregisterHandler(handler: Handler<T>): void
+    registerHandler(handler: WatchableDocHandler<T>): void
+    unregisterHandler(handler: WatchableDocHandler<T>): void
   }
 
   // Note that until https://github.com/Microsoft/TypeScript/issues/2361 is addressed, we
@@ -140,7 +142,8 @@ declare module 'automerge' {
   const uuid: UUIDFactory
 
   type ChangeFn<T> = (doc: T) => void
-  type Handler<T> = (docId: UUID, doc: T) => void
+  type DocSetHandler<T> = (docId: UUID, doc: T) => void
+  type WatchableDocHandler<T> = (doc: T) => void
   type Key = string | number
   type UUID = string | number
   type filterFn<T> = (elem: T) => boolean
@@ -211,12 +214,12 @@ declare module 'automerge' {
   }
 
   type RequestType =
-    | 'change' 
+    | 'change'
     | 'redo'
     | 'undo'
 
   type OpAction =
-    | 'ins' 
+    | 'ins'
     | 'del'
     | 'inc'
     | 'link'
@@ -234,7 +237,7 @@ declare module 'automerge' {
 
   type CollectionType =
     | 'list'
-    | 'map' 
+    | 'map'
     | 'table'
     | 'text'
 
@@ -265,8 +268,8 @@ type KeyArray<T, KeyOrder extends Array<keyof T>> =
 //
 // function add(b: Book | BookTuple): void
 // ```
-// Now the argument for `Table.add` can either be a `Book` object, or an array of values for each 
-// of the properties of `Book`, in the order given. 
+// Now the argument for `Table.add` can either be a `Book` object, or an array of values for each
+// of the properties of `Book`, in the order given.
 // ```
 // add({authors, title, date}) // valid
 // add([authors, title, date]) // also valid
