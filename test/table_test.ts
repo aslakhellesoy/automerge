@@ -116,7 +116,7 @@ describe('Table', () => {
     })
 
     it('should save and reload', () => {
-      const s2 = Automerge.load(Automerge.save(s1))
+      const s2 = Automerge.load<BookDb>(Automerge.save(s1))
       assert.deepEqual(s2.books.columns, ['authors', 'title', 'isbn'])
       assert.deepEqual(s2.books.byId(rowId), DDIA)
     })

@@ -1,5 +1,3 @@
-import { UUID } from "automerge"
-
 declare module 'automerge' {
   function applyChanges<T>(doc: T, changes: Change<T>[]): T
   function canRedo<T>(doc: T): boolean
@@ -17,10 +15,10 @@ declare module 'automerge' {
   function getObjectById<T>(doc: T, objectId: UUID): T
   function getObjectId<T>(doc: T): string
   function init<T>(actorId?: string): T
-  function load<T>(doc: T, actorId?: string): T
+  function load<T>(s: string, actorId?: string): T
   function merge<T>(localDoc: T, remoteDoc: T): T
   function redo<T>(doc: T, message?: string): T
-  function save<T>(doc: T): T
+  function save<T>(doc: T): string
   function setActorId<T>(doc: T, actorId: UUID): T
   function undo<T>(doc: T, message?: string): T
   function getElemId<T=string>(object: List<T> | Text, index: number): UUID
