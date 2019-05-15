@@ -55,7 +55,7 @@ describe('Automerge', () => {
       it('should prevent mutations outside of a change block by throwing an error (strict mode)', () => {
 
         s2 = Automerge.change(s1, doc => (doc.foo = 'bar'))
-        
+
         // modifications of a frozen object throw an error
         assert.throws(() => { s2.foo = 'lemon' }, /read.only/i)
 
@@ -64,26 +64,26 @@ describe('Automerge', () => {
 
         // within a change block, changes must be made to the callback argument
         assert.throws(() => { Automerge.change(s2, doc => (s2.foo = 'lemon')) }, /read.only/i)
-        
+
         // Object.assign throws either way
         assert.throws(() => {
           Object.assign(s2, { x: 4 })
         })
         assert.notStrictEqual(s2.x, 4)
       })
-      
+
       // it('should prevent mutations outside of a change block by silently ignoring them (not strict mode)', () => {
       //   s2 = Automerge.change(s1, doc => (doc.foo = 'bar'))
-        
+
       //   // modifications of a frozen object are silently ignored
       //   s2.foo = 'lemon'
       //   assert.strictEqual(s2.foo, 'bar')
-        
+
       //   // deletes are also silently ignored
       //   const deleted = delete s2['foo']
       //   assert.strictEqual(s2.foo, 'bar')
       //   assert.strictEqual(deleted, false)
-        
+
       //   // within a change block, changes must be made to the callback argument
       //   Automerge.change(s2, doc => {
       //     s2.foo = 'lemon'
@@ -1418,7 +1418,7 @@ describe('Automerge', () => {
       let s1: any = Automerge.change(Automerge.init('actor1'), doc => (doc.x = 3))
       let s2: any = Automerge.change(Automerge.init('actor2'), doc => (doc.x = 5))
       s1 = Automerge.merge(s1, s2)
-      let s3 = Automerge.load(Automerge.save(s1))
+      let s3 = Automerge.load<any>(Automerge.save(s1))
       assert.strictEqual(s1.x, 5)
       assert.strictEqual(s3.x, 5)
       assert.deepEqual(Automerge.getConflicts(s1, 'x'), { actor1: 3 })
