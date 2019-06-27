@@ -3148,6 +3148,17 @@ var Counter = function () {
     value: function toString() {
       return this.valueOf().toString();
     }
+
+    /**
+     * Returns the counter value, so that a JSON serialization of an Automerge
+     * document represents the counter simply as an integer.
+     */
+
+  }, {
+    key: 'toJSON',
+    value: function toJSON() {
+      return this.value;
+    }
   }]);
 
   return Counter;
@@ -3417,9 +3428,10 @@ function makeChange(doc, requestType, context, message) {
     state.requests = [];
     return [applyPatchToDoc(doc, patch, state, true), request];
   } else {
+    if (!context) context = new Context(doc, actor);
     var queuedRequest = Object.assign({}, request);
     queuedRequest.before = doc;
-    if (context) queuedRequest.diffs = context.diffs;
+    queuedRequest.diffs = context.diffs;
     state.requests = state.requests.slice(); // shallow clone
     state.requests.push(queuedRequest);
     return [updateRootObject(doc, context.updated, context.inbound, state), request];
@@ -3582,6 +3594,15 @@ function init(options) {
   Object.defineProperty(root, INBOUND, { value: Object.freeze({}) });
   Object.defineProperty(root, STATE, { value: Object.freeze(state) });
   return Object.freeze(root);
+}
+
+/**
+ * Returns a new document object initialized with the given state.
+ */
+function from(initialState) {
+  return change(init(), 'Initialization', function (doc) {
+    return Object.assign(doc, initialState);
+  });
 }
 
 /**
@@ -3840,7 +3861,7 @@ function getElementIds(list) {
 }
 
 module.exports = {
-  init: init, change: change, emptyChange: emptyChange, applyPatch: applyPatch,
+  init: init, from: from, change: change, emptyChange: emptyChange, applyPatch: applyPatch,
   canUndo: canUndo, undo: undo, canRedo: canRedo, redo: redo,
   getObjectId: getObjectId, getObjectById: getObjectById, getActorId: getActorId, setActorId: setActorId, getConflicts: getConflicts,
   getBackendState: getBackendState, getElementIds: getElementIds,
@@ -4410,6 +4431,43 @@ var Table = function () {
       instance.entries = this.entries;
       return instance;
     }
+
+    /**
+     * Returns an object containing both the table entries (indexed by objectID)
+     * and the columns (under the key `columns`). This provides a nice format
+     * when serializing an Automerge document to JSON.
+     */
+
+  }, {
+    key: 'toJSON',
+    value: function toJSON() {
+      var rows = {};
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = this.ids[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var id = _step2.value;
+          rows[id] = this.byId(id);
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
+
+      return { columns: this.columns, rows: rows };
+    }
   }, {
     key: 'ids',
     get: function get() {
@@ -4601,6 +4659,17 @@ var Text = function () {
           }
         }
       };
+    }
+
+    /**
+     * Returns the content of the Text object as a simple string, so that the
+     * JSON serialization of an Automerge document represents text nicely.
+     */
+
+  }, {
+    key: 'toJSON',
+    value: function toJSON() {
+      return this.join('');
     }
   }, {
     key: 'length',
@@ -14027,6 +14096,15 @@ function init(actorId) {
   return Frontend.init({ actorId: actorId, backend: Backend });
 }
 
+/**
+ * Returns a new document object initialized with the given state.
+ */
+function from(initialState) {
+  return change(init(), 'Initialization', function (doc) {
+    return Object.assign(doc, initialState);
+  });
+}
+
 function change(doc, message, callback) {
   var _Frontend$change = Frontend.change(doc, message, callback),
       _Frontend$change2 = _slicedToArray(_Frontend$change, 2),
@@ -14153,7 +14231,7 @@ function getHistory(doc) {
 }
 
 module.exports = {
-  init: init, change: change, emptyChange: emptyChange, undo: undo, redo: redo,
+  init: init, from: from, change: change, emptyChange: emptyChange, undo: undo, redo: redo,
   load: load, save: save, merge: merge, diff: diff, getChanges: getChanges, applyChanges: applyChanges, getMissingDeps: getMissingDeps,
   equals: equals, getHistory: getHistory, uuid: uuid,
   Frontend: Frontend, Backend: Backend,

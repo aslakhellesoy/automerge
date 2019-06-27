@@ -15,6 +15,7 @@ declare module 'automerge' {
   function getObjectById<T>(doc: T, objectId: UUID): T
   function getObjectId<T>(doc: T): string
   function init<T>(actorId?: string): T
+  function from<T>(initialState: T): T
   function load<T>(s: string, actorId?: string): T
   function merge<T>(localDoc: T, remoteDoc: T): T
   function redo<T>(doc: T, message?: string): T
