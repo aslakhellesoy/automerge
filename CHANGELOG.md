@@ -8,8 +8,17 @@ is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+- **Added** [#127]: New `Automerge.from` function creates a new document and initializes it
+  with an initial state given as an argument ([@HerbCaudill], [@ept])
+- **Fixed** [#165]: Undo/redo now work when using separate frontend and backend ([@ept])
+
+## [0.10.1] — 2019-05-17
+
 - **Fixed** [#151]: Exception "Duplicate list element ID" after a list element was added and
   removed again in the same change callback ([@ept], [@minhhien1996])
+- **Changed** [#163]: Calling `JSON.stringify` on an Automerge document containing
+  `Automerge.Text`, `Automerge.Table` or `Automerge.Counter` now serializes those objects in a
+  clean way, rather than dumping the object's internal properties ([@ept])
 
 ## [0.10.0] — 2019-02-04
 
@@ -178,7 +187,8 @@ is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - First public release.
 
 
-[Unreleased]: https://github.com/automerge/automerge/compare/v0.10.0...HEAD
+[Unreleased]: https://github.com/automerge/automerge/compare/v0.10.1...HEAD
+[0.10.1]: https://github.com/automerge/automerge/compare/v0.10.0...v0.10.1
 [0.10.0]: https://github.com/automerge/automerge/compare/v0.9.2...v0.10.0
 [0.9.2]: https://github.com/automerge/automerge/compare/v0.9.1...v0.9.2
 [0.9.1]: https://github.com/automerge/automerge/compare/v0.9.0...v0.9.1
@@ -202,6 +212,8 @@ is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 [0.4.0]: https://github.com/automerge/automerge/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/automerge/automerge/compare/v0.2.0...v0.3.0
 
+[#165]: https://github.com/automerge/automerge/pull/165
+[#163]: https://github.com/automerge/automerge/pull/163
 [#151]: https://github.com/automerge/automerge/issues/151
 [#150]: https://github.com/automerge/automerge/pull/150
 [#148]: https://github.com/automerge/automerge/pull/148
@@ -211,6 +223,7 @@ is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 [#130]: https://github.com/automerge/automerge/pull/130
 [#129]: https://github.com/automerge/automerge/pull/129
 [#128]: https://github.com/automerge/automerge/pull/128
+[#127]: https://github.com/automerge/automerge/issues/127
 [#126]: https://github.com/automerge/automerge/pull/126
 [#125]: https://github.com/automerge/automerge/pull/125
 [#120]: https://github.com/automerge/automerge/pull/120
@@ -253,6 +266,7 @@ is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 [@aslakhellesoy]: https://github.com/aslakhellesoy
 [@CGNonofr]: https://github.com/CGNonofr
 [@EthanRBrown]: https://github.com/EthanRBrown
+[@HerbCaudill]: https://github.com/HerbCaudill
 [@jeffpeterson]: https://github.com/jeffpeterson
 [@jimpick]: https://github.com/jimpick
 [@ept]: https://github.com/ept

@@ -105,9 +105,10 @@ function makeChange(doc, requestType, context, message) {
     return [applyPatchToDoc(doc, patch, state, true), request]
 
   } else {
+    if (!context) context = new Context(doc, actor)
     const queuedRequest = Object.assign({}, request)
     queuedRequest.before = doc
-    if (context) queuedRequest.diffs = context.diffs
+    queuedRequest.diffs = context.diffs
     state.requests = state.requests.slice() // shallow clone
     state.requests.push(queuedRequest)
     return [updateRootObject(doc, context.updated, context.inbound, state), request]
@@ -229,6 +230,14 @@ function init(options) {
   Object.defineProperty(root, STATE,     {value: Object.freeze(state)})
   return Object.freeze(root)
 }
+
+/**
+ * Returns a new document object initialized with the given state.
+ */
+function from(initialState) {
+  return change(init(), 'Initialization', doc => Object.assign(doc, initialState))
+}
+
 
 /**
  * Changes a document `doc` according to actions taken by the local user.
@@ -456,7 +465,7 @@ function getElementIds(list) {
 }
 
 module.exports = {
-  init, change, emptyChange, applyPatch,
+  init, from, change, emptyChange, applyPatch,
   canUndo, undo, canRedo, redo,
   getObjectId, getObjectById, getActorId, setActorId, getConflicts,
   getBackendState, getElementIds,
